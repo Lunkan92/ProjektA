@@ -12,8 +12,8 @@ namespace Assignment_A1_03.Services
 
     public class OpenWeatherService
     {
-        ConcurrentDictionary<(DateTime,string), Forecast> _forecastCacheCity = new ConcurrentDictionary<(DateTime,string), Forecast>();
-        ConcurrentDictionary<(DateTime, double, double), Forecast> _forecastCacheLongLat = new ConcurrentDictionary<(DateTime, double, double), Forecast>();
+        ConcurrentDictionary<string, Forecast> _forecastCacheCity = new ConcurrentDictionary<string, Forecast>();
+        ConcurrentDictionary<(double, double), Forecast> _forecastCacheLongLat = new ConcurrentDictionary<(double, double), Forecast>();
         public event WeatherForecastAvailableHandler WeatherForecastAvailable;
         HttpClient httpClient = new HttpClient();
         readonly string apiKey = "01e1d7002da561ca5aca0dac28fbae18"; // Your API Key
@@ -27,9 +27,9 @@ namespace Assignment_A1_03.Services
             //part of cache code here
             var cities = City;
             var date = DateTime.Now;
-            var key = (date, cities);
+            var key = (cities);
 
-            if (!_forecastCacheCity.TryGetValue(key, out var forecast))
+            if (!_forecastCacheCity.TryGetValue(key, out var forecast)||forecast.Items[0].DateTime.AddMinutes(1) > date)
             {
                 //https://openweathermap.org/current
                 var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -39,16 +39,17 @@ namespace Assignment_A1_03.Services
                 WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for {City} avalible");
 
             }
-            else if (forecast.Items[0].DateTime.AddMinutes(1) > date)
-            {
 
-                //https://openweathermap.org/current
-                var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-                var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
-                forecast = await ReadWebApiAsync(uri);
-                _forecastCacheCity[key] = forecast;
-                WeatherForecastAvailable.Invoke(forecast, $"Ne weather forecast for {City} avalible");
-            }
+            //else if (forecast.Items[0].DateTime.AddMinutes(1) > date)
+            //{
+
+            //    //https://openweathermap.org/current
+            //    var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            //    var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
+            //    forecast = await ReadWebApiAsync(uri);
+            //    _forecastCacheCity[key] = forecast;
+            //    WeatherForecastAvailable.Invoke(forecast, $"Ne weather forecast for {City} avalible");
+            //}
             else
             {
                 WeatherForecastAvailable.Invoke(forecast, $"Cached weather forecast for {City} avalible");
@@ -75,13 +76,12 @@ namespace Assignment_A1_03.Services
             var longit = longitude;
             var latit = latitude;
             var date = DateTime.Now;
-            var key = (date, longit, latit);
+            var key = (longit, latit);
             //part of cache code here
 
 
-            if (!_forecastCacheLongLat.TryGetValue(key, out var forecast))
+            if (!_forecastCacheLongLat.TryGetValue(key, out var forecast)|| forecast.Items[0].DateTime.AddMinutes(1) > date)
             {
-
 
                 //https://openweathermap.org/current
                 var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -93,21 +93,23 @@ namespace Assignment_A1_03.Services
 
 
             }
-            else if (forecast.Items[0].DateTime.AddMinutes(1) > date)
-            {
-                //https://openweathermap.org/current
-                var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-                var uri = $"https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&units=metric&lang={language}&appid={apiKey}";
+           
+            //else if (forecast.Items[0].DateTime.AddMinutes(1) > date)
+            //{
+            //    //https://openweathermap.org/current
+            //    var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            //    var uri = $"https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&units=metric&lang={language}&appid={apiKey}";
 
-                forecast = await ReadWebApiAsync(uri);
-                _forecastCacheLongLat[key] = forecast;
-                WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for ({latitude},{longitude}) avalible");
-            }
+            //    forecast = await ReadWebApiAsync(uri);
+            //    _forecastCacheLongLat[key] = forecast;
+            //    WeatherForecastAvailable.Invoke(forecast, $"Ne weather forecast for ({latitude},{longitude}) avalible");
+            //}
             else
             {
                 WeatherForecastAvailable.Invoke(forecast, $"Cached weather forecast for ({latitude},{longitude}) avalible");
 
             }
+
 
             //part of event and cache code here
             //generate an event with different message if cached data
