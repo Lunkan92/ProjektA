@@ -101,7 +101,7 @@ namespace Assignment_A1_03.Services
 
                 forecast = await ReadWebApiAsync(uri);
                 _forecastCacheLongLat[key] = forecast;
-                WeatherForecastAvailable.Invoke(forecast, $"Ne weather forecast for ({latitude},{longitude}) avalible");
+                WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for ({latitude},{longitude}) avalible");
             }
             else
             {
