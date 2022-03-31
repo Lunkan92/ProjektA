@@ -29,7 +29,7 @@ namespace Assignment_A1_03.Services
             var date = DateTime.Now;
             var key = (cities);
 
-            if (!_forecastCacheCity.TryGetValue(key, out var forecast)||forecast.Items[0].DateTime.AddMinutes(1) > date)
+            if (!_forecastCacheCity.TryGetValue(key, out var forecast))
             {
                 //https://openweathermap.org/current
                 var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -39,22 +39,25 @@ namespace Assignment_A1_03.Services
                 WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for {City} avalible");
 
             }
-
-            //else if (forecast.Items[0].DateTime.AddMinutes(1) > date)
-            //{
-
-            //    //https://openweathermap.org/current
-            //    var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            //    var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
-            //    forecast = await ReadWebApiAsync(uri);
-            //    _forecastCacheCity[key] = forecast;
-            //    WeatherForecastAvailable.Invoke(forecast, $"Ne weather forecast for {City} avalible");
-            //}
-            else
+            else if(forecast != null && forecast.Items[0].DateTime.AddSeconds(60) < date)
             {
                 WeatherForecastAvailable.Invoke(forecast, $"Cached weather forecast for {City} avalible");
 
             }
+            else if (forecast.Items[0].DateTime.AddSeconds(60) > date)
+            {
+                //https://openweathermap.org/current
+                var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                var uri = $"https://api.openweathermap.org/data/2.5/forecast?q={City}&units=metric&lang={language}&appid={apiKey}";
+                forecast = await ReadWebApiAsync(uri);
+                _forecastCacheCity[key] = forecast;
+                WeatherForecastAvailable.Invoke(forecast, $"A New weather forecast for {City} avalible");
+            }
+            else
+            {
+                Console.WriteLine("Something went wrong");
+            }
+
 
 
             ////https://openweathermap.org/current

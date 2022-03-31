@@ -34,9 +34,10 @@ namespace Assignment_A1_03
                 t2 = service.GetForecastAsync("Miami");
                 
                 Task.WaitAll(t1, t2);
-
+                Thread.Sleep(10000);
                 t3 = service.GetForecastAsync(latitude, longitude);
                 t4 = service.GetForecastAsync("Miami");
+                
 
                 //Wait and confirm we get an event showing cahced data avaialable
                 Task.WaitAll(t3, t4);
