@@ -13,6 +13,7 @@ using Assignment_A1_02.Services;
 
 namespace Assignment_A1_02
 {
+ 
     class Program
     {
         static void Main(string[] args)
@@ -31,12 +32,14 @@ namespace Assignment_A1_02
                 //Create the two tasks and wait for comletion
                 t1 = service.GetForecastAsync(latitude, longitude);
                 t2 = service.GetForecastAsync("Miami");
-
+                
                 Task.WaitAll(t1, t2);
             }
             catch (Exception ex)
             {
                 //if exception write the message later
+               
+                
                 exception = ex;
             }
 
@@ -81,6 +84,8 @@ namespace Assignment_A1_02
                 Console.WriteLine($"City weather service error");
                 Console.WriteLine($"Error: {exception.Message}");
             }
+
+          
         }
         static void ReportWeatherDataAvailable(object sender, string message)
         {

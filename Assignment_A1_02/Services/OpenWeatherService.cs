@@ -11,10 +11,12 @@ using Assignment_A1_02.Models;
 
 namespace Assignment_A1_02.Services
 {
+    public delegate void WeatherForecastAvailableHandler(object sender, string message);
     public class OpenWeatherService
     {
+        public event WeatherForecastAvailableHandler WeatherForecastAvailable;
         HttpClient httpClient = new HttpClient();
-        readonly string apiKey = ""; // Your API Key
+        readonly string apiKey = "01e1d7002da561ca5aca0dac28fbae18"; // Your API Key
 
         //part of your event code here
         public async Task<Forecast> GetForecastAsync(string City)
@@ -25,7 +27,7 @@ namespace Assignment_A1_02.Services
 
             Forecast forecast = await ReadWebApiAsync(uri);
 
-            //part of your event code here
+            WeatherForecastAvailable.Invoke(forecast,$"New weather forecast for {City} avalible");
 
             return forecast;
 
@@ -38,13 +40,31 @@ namespace Assignment_A1_02.Services
 
             Forecast forecast = await ReadWebApiAsync(uri);
 
-            //part of your event code here
+            WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for ({latitude},{longitude}) avalible");
 
             return forecast;
         }
         private async Task<Forecast> ReadWebApiAsync(string uri)
         {
             // part of your read web api code here
+            HttpResponseMessage respone = await httpClient.GetAsync(uri);
+            respone.EnsureSuccessStatusCode();
+            WeatherApiData weatherApi = await respone.Content.ReadFromJsonAsync<WeatherApiData>();
+
+            var forecast = new Forecast
+            {
+
+                City = weatherApi.city.name,
+                Items = weatherApi.list.Select(x => new ForecastItem
+                {
+
+                    Temperature = x.main.temp,
+                    WindSpeed = x.wind.speed,
+                    Description = x.weather[0].description,
+                    Icon = x.weather[0].icon,
+                    DateTime = UnixTimeStampToDateTime(x.dt)
+                }).ToList()
+            };
 
             // part of your data transformation to Forecast here
             return forecast;

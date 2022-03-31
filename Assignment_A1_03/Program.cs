@@ -27,6 +27,7 @@ namespace Assignment_A1_03
             {
                 double latitude = 59.5086798659495;
                 double longitude = 18.2654625932976;
+   
 
                 //Create the two tasks and wait for comletion
                 t1 = service.GetForecastAsync(latitude, longitude);
@@ -36,9 +37,10 @@ namespace Assignment_A1_03
 
                 t3 = service.GetForecastAsync(latitude, longitude);
                 t4 = service.GetForecastAsync("Miami");
-                
+
                 //Wait and confirm we get an event showing cahced data avaialable
                 Task.WaitAll(t3, t4);
+
             }
             catch (Exception ex)
             {
@@ -57,7 +59,7 @@ namespace Assignment_A1_03
                     Console.WriteLine(group.Key.Date.ToShortDateString());
                     foreach (var item in group)
                     {
-                        Console.WriteLine($"   - {item.DateTime.ToShortTimeString()}: {item.Description}, teperature: {item.Temperature} degC, wind: {item.WindSpeed} m/s");
+                        Console.WriteLine($"   - {item.DateTime.ToShortTimeString()}: {item.Description}, temperature: {item.Temperature} degC, wind: {item.WindSpeed} m/s");
                     }
                 }
             }
@@ -78,7 +80,7 @@ namespace Assignment_A1_03
                     Console.WriteLine(group.Key.Date.ToShortDateString());
                     foreach (var item in group)
                     {
-                        Console.WriteLine($"   - {item.DateTime.ToShortTimeString()}: {item.Description}, teperature: {item.Temperature} degC, wind: {item.WindSpeed} m/s");
+                        Console.WriteLine($"   - {item.DateTime.ToShortTimeString()}: {item.Description}, temperature: {item.Temperature} degC, wind: {item.WindSpeed} m/s");
                     }
                 }
             }
