@@ -19,6 +19,12 @@ namespace Assignment_A2_01.Models
         public string UrlToImage { get; set; }
         public DateTime PublishedAt { get; set; }
         public string Content { get; set; }
+        public override string ToString()
+        {
+            
+            return $"{Title }{Source.Name} {Author}\n";
+                
+        }
     }
     [XmlRoot("NewsApiData", Namespace = "http://mynamespace/test/")] //This line needed only for the SampleData
     public class NewsApiData
@@ -27,4 +33,5 @@ namespace Assignment_A2_01.Models
         public int TotalResults { get; set; }
         public List<Article> Articles { get; set; }
     }
+    
 }

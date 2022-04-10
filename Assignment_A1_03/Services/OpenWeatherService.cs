@@ -38,13 +38,13 @@ namespace Assignment_A1_03.Services
 
                 forecast = await ReadWebApiAsync(uri);
                 _forecastCacheCity[key] = forecast;
-                WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for {City} avalible");
+                WeatherForecastAvailable?.Invoke(forecast, $"New weather forecast for {City} avalible");
 
             }
        
             else
 
-                WeatherForecastAvailable.Invoke(forecast, $"Cached weather forecast for {City} avalible");
+                WeatherForecastAvailable?.Invoke(forecast, $"Cached weather forecast for {City} avalible");
                //part of event and cache code here
             //generate an event with different message if cached data
 
@@ -71,13 +71,13 @@ namespace Assignment_A1_03.Services
 
                 forecast = await ReadWebApiAsync(uri);
                 _forecastCacheLongLat[key] = forecast;
-                WeatherForecastAvailable.Invoke(forecast, $"New weather forecast for ({latitude},{longitude}) avalible");
+                WeatherForecastAvailable?.Invoke(forecast, $"New weather forecast for ({latitude},{longitude}) avalible");
 
 
             }
 
             else
-              WeatherForecastAvailable.Invoke(forecast, $"Cached weather forecast for ({latitude},{longitude}) avalible");
+              WeatherForecastAvailable?.Invoke(forecast, $"Cached weather forecast for ({latitude},{longitude}) avalible");
 
 
             //part of event and cache code here
